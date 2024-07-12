@@ -4,7 +4,7 @@ connect('');
 
 const ptSchema = new Schema({
     name: String,
-    ptId: String, // Id of the patient given on admission by the hospital 
+    ptId: String,
     drName: String, // under which dr the patient is
     doAd: Date, // date of admission
     address: String, 
@@ -14,6 +14,7 @@ const ptSchema = new Schema({
 })
 
 const sinlgeVitalsSchema = new Schema ({
+    doAs: Date, // date of assesment, on which date vitals signs are uploaded   
     heartRate: Number,
     spO2: Number,//saturation of oxygen in blood, unit - %
     rr: Number, //respiratory rate 
@@ -33,11 +34,25 @@ const sinlgeVitalsSchema = new Schema ({
 
 const vitalSchema = new Schema({
     ptId: String, 
-    doAs: Date, // on which date the vital signs are written
     vitals: [sinlgeVitalsSchema]
+})
+
+const adminSchema = new Schema({
+    email: String,
+    userName: String,
+    password: String
+})
+
+const wardSchema = new Schema({
+    location: String,
+    hospitalName: String,
+    wardName: String,
+    password: String
 })
 
 const Patient = new model('Patient', ptSchema); 
 const Vitals = new model('Vitals', vitalSchema); 
+const Admin = new model('Admin', adminSchema);
+const Ward = new model('Ward', wardSchema)
 
-module.exports = { Patient, Vitals }; 
+module.exports = { Patient, Vitals, Admin, Ward }; 
