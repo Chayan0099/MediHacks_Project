@@ -38,7 +38,7 @@ router.post('/signup', async (req, res) => {
         password: req.body.password
     })
      
-    const token = jwt.sign(user._id, JWT_SECRET); 
+    const token = jwt.sign({id:user._id}, JWT_SECRET); 
 
     return res.json({
         token: token, 
@@ -71,10 +71,46 @@ router.post('/signin', async (req, res) => {
         })                                                
     }
 
-    const token = jwt.sign(user._id, JWT_SECRET); 
+    const token = jwt.sign({id:user._id}, JWT_SECRET); 
 
     return res.json({
         token: token
     })
+})
+
+router.post('/createward', async (req, res) => {
+    const wardSchema = z.object({
+        location: z.string(), 
+        hospitalName: z.string(),
+        wardName: z.string(), 
+        password: z.string()
+    })
+
+    const parsed = wardSchema.safeParse(req.body); 
+
+    if(!parsed.success){
+        return res.status(403).json({
+            msg:"invalid input"
+        })
+    }
+
+    const existingWard = await Ward.findOne({
+        wardName: req.body.wardName
+    })
+
+    if(existingWard){
+        return res.json({
+            msg:"ward already exists"
+        })
+    }
+
+    const ward = await Ward.create({
+        location: req.body.location, 
+        hospitalName: req.body.hospitalName,
+        wardName: req.body.wardName,
+        password: req.body.password
+    })
+
+    
 })
 
